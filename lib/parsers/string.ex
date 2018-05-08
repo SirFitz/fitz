@@ -7,6 +7,16 @@ defmodule Fitz.String do
     String.replace(string, ~s("), "")
   end
 
+  def remove_single_quotes(string) do
+    String.replace(string, ~s("), "")
+  end
+
+  def parse_for_html(string) do
+    string
+    |> String.replace(~s("), "&#34;")
+    |> String.replace("'", "&#39;")
+  end
+
   @doc """
   Fitz.String.permalink/1
   Generates permalink
