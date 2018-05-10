@@ -8,11 +8,12 @@ defmodule Qrcode do
         pad ->
           String.upcase("#{pad}#{value}")
       end
-    path = "/tmp/qr_#{token}.png"
+    uid = Timex.now |> Timex.to_gregorian_microseconds
+    path = "/tmp/qr_#{uid}.png"
     qrcode = :qrcode.encode(token)
     image = :qrcode_demo.simple_png_encode(qrcode)
     File.write(path, image)
-    %{path: path, filename: "qr_#{token}.png", mime_type: "image/png"}
+    %{path: path, filename: "qr_#{uid}.png", mime_type: "image/png"}
   end
 
   def pad_string(string, length) do

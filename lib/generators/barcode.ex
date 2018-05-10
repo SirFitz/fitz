@@ -2,7 +2,8 @@ defmodule Barcode do
 
   def generate(value, method) do
     token = pad_string(value, 20)
-    path = "/tmp/#{token}.png"
+    uid = Timex.now |> Timex.to_gregorian_microseconds
+    path = "/tmp/#{uid}.png"
     barcode =
       case method do
         39 ->
@@ -15,7 +16,7 @@ defmodule Barcode do
           Barlix.Code128.encode!(token)
           |> Barlix.PNG.print(file: path)
       end
-    %{path: path, filename: "#{token}.png", mime_type: "image/png"}
+    %{path: path, filename: "#{uid}.png", mime_type: "image/png"}
   end
 
   def pad_string(string, length) do
