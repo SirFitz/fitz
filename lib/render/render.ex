@@ -18,9 +18,9 @@ defmodule Render do
   def get_template(app, folder \\ nil, template) do
      path =
        if folder do
-         :code.priv_dir(app) <> "/#{folder}/" <> "#{template}"
+         "#{:code.priv_dir(app)}" <> "/#{folder}/" <> "#{template}"
        else
-         :code.priv_dir(app) <> "/#{template}"
+         "#{:code.priv_dir(app)}" <> "/#{template}"
        end
      case File.read(path) do
        {:ok, file} ->
