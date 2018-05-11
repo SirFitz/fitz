@@ -2,7 +2,8 @@ defmodule Store.DateTime do
 
   def clean_date(date) do
     date
-    |> String.replace(["/","-","|"], " ")
+    |> String.replace(["/","-","|","  "], " ")
+    |> String.trim
   end
 
   def days, do: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -13,18 +14,8 @@ defmodule Store.DateTime do
   end
 
   def str_directives do
-    "%Y-%m-%d %H:%M::%a, %b %d, %y::%Y::%b %d, %y::%A, %b %d::%m/%d/%Y::%d/%m/%Y::%Y/%d/%m::%Y/%m/%d::%m-%e-%y %H:%M::%b %e, %l:%M %p::%B %Y::%b %d, %Y::%a, %e %b %Y %H:%M:%S %z::%Y-%m-%dT%l:%M:%S%z::%I:%M:%S %p::%H:%M:%S::%e %b %Y %H:%M:%S%p::%e %b %Y::%e %b %Y %H:%M::%d.%m.%y::%m.%d.%y::%y.%d.%m::%A, %d %b %Y %l:%M %p::%A, %d %b %Y %l:%M::%d %b %Y::%b %d, %Y::%a::%A::%b::%B::%d::%e::%H::%I::%l::%j::%m::%M::%p::%S::%w::%y::%Y::%Z::%d/%m/%Y %H:%M%p::%B %e, %Y %l:%M%p::%B %e, %Y::%%"
+    "%Y-%m-%d %H:%M::%a, %b %d, %y::%Y::%b %d, %y::%A, %b %d::%m/%d/%Y::%d/%m/%Y::%Y/%d/%m::%Y/%m/%d::%m-%e-%y %H:%M::%b %e, %l:%M %p::%B %Y::%b %d, %Y::%a, %e %b %Y %H:%M:%S %z::%Y-%m-%dT%l:%M:%S%z::%I:%M:%S %p::%H:%M:%S::%e %b %Y %H:%M:%S%p::%e %b %Y::%e %b %Y %H:%M::%d.%m.%y::%m.%d.%y::%y.%d.%m::%A, %d %b %Y %l:%M %p::%A, %d %b %Y %l:%M::%d %b %Y::%b %d, %Y::%a::%A::%b::%B::%d::%e::%H::%I::%l::%j::%m::%M::%p::%S::%w::%y::%Y::%Z::%d/%m/%Y %H:%M%p::%B %e, %Y %l:%M%p::%B %e, %Y::%d/%m/%Y at %H:%M::%d/%m/%Y %H:%M::%d %m %Y::%d %m %Y at %H:%M::%d %m %Y at %H:%M%p::%d %m %Y at %H:%M %p::%%"
     |> String.split("::")
-    #[[" %Y", " %Y ", "%Y ", "%Y"], [" %a", " %a ", "%a ", "%a"],
-    # [" %A", " %A ", "%A ", "%A"], [" %b", " %b ", "%b ", "%b"],
-    # [" %B", " %B ", "%B ", "%B"], [" %d", " %d ", "%d ", "%d"],
-    # [" %e", " %e ", "%e ", "%e"], [" %H", " %H ", "%H ", "%H"],
-    # [" %I", " %I ", "%I ", "%I"], [" %l", " %l ", "%l ", "%l"],
-    # [" %j", " %j ", "%j ", "%j"], [" %m", " %m ", "%m ", "%m"],
-    # [" %M", " %M ", "%M ", "%M"], [" %p", " %p ", "%p ", "%p"],
-    # [" %S", " %S ", "%S ", "%S"], [" %w", " %w ", "%w ", "%w"],
-    # [" %y", " %y ", "%y ", "%y"], [" %Y", " %Y ", "%Y ", "%Y"],
-    # [" %Z", " %Z ", "%Z ", "%Z"], [" ", "  ", " ", ""]]
   end
 
   def test(datetime) do
@@ -44,36 +35,74 @@ defmodule Store.DateTime do
       case format do
         nil ->
               datetime = clean_date(datetime)
-              format = Enum.find(str_directives, fn(x) ->
-              case Timex.parse(datetime, x,  :strftime) do
-                  {:ok, time} ->
-                    true
-                  {:error, reason} ->
-                    false
-                end
-              end)
-
-              Timex.parse(datetime, format, :strftime)
-
+              format =
+                Enum.find(str_directives, fn(x) ->
+                        case Timex.parse(datetime, x,  :strftime) do
+                            {:ok, time} ->
+                              true
+                            {:error, reason} ->
+                              false
+                          end
+                        end)
+              IO.puts "NIL FORM"
+              IO.inspect datetime
+              IO.inspect format
+              case format do
+                nil ->
+                  date = next_day(datetime)
+                _ ->
+                  Timex.parse(datetime, format, :strftime)
+              end
         "{WDfull}" ->
-              next_day(datetime)
+              date = next_day(datetime)
+              test(date)
           _ ->
               Timex.parse(datetime, format)
         end
 
   end
 
-  def next_day(day) do
-    day =
+  def check_last(a) do
+    i =
+      a
+      |> String.reverse
+      |> Integer.parse
+    case i do
+      :error ->
+        a
+      {int, rest} ->
+        s = "0#{int}:00"
+        String.replace(a, "#{int}", s)
+    end
+  end
+
+  def next_day(day_init) do
+    day_name =
       cond do
-        is_bitstring(day) ->
-          day
-        is_integer(day) ->
-          Enum.at(days, day)
+        is_bitstring(day_init) ->
+          list = String.split(day_init, " ")
+          d =
+            Enum.filter(list, fn(x)-> Enum.member?(Store.DateTime.days, x) end)
+            |> List.first
+          case d do
+            nil ->
+              num =
+                Timex.now
+                |> Timex.weekday
+
+              (num - 1) |> Timex.day_name
+            _ ->
+              d
+          end
+        is_integer(day_init) ->
+          Enum.at(days, day_init)
         true ->
-          "Sunday"
+          num =
+            Timex.now
+            |> Timex.weekday
+          (num - 1) |> Timex.day_name
       end
-    day = Timex.day_to_num(day)
+    day = Timex.day_to_num(day_name)
 
     today = Timex.now
 
@@ -89,6 +118,21 @@ defmodule Store.DateTime do
         Timex.shift(today, days: (7 - tday + day))
       end
 
+    {:ok, d} = Timex.format(date, "%d/%m/%Y", :strftime)
+    IO.inspect result = String.replace(day_init, day_name, d)
+    result =
+      case String.contains?(result, ":") do
+        true ->
+          s = result |> String.split([" "])  |> Enum.filter(fn(x)-> String.contains?(x,":") end)  |> List.first
+          fin =
+            s
+            |> String.split(":")
+            |> Enum.map(fn(x)-> if String.length(x) < 2 do "0" <> x else x end end)
+            |> Enum.join(":")
+          String.replace(result, s, fin)
+        false ->
+          result
+        end
   end
 
   def parallel(start, fin) do

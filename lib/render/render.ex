@@ -15,6 +15,21 @@ defmodule Render do
     EEx.eval_string(template, data)
   end
 
+  def get_template(app, folder \\ nil, template) do
+     path =
+       if folder do
+         :code.priv_dir(app) <> "/#{folder}/" <> "#{template}"
+       else
+         :code.priv_dir(app) <> "/#{template}"
+       end
+     case File.read(path) do
+       {:ok, file} ->
+         {:ok, file}
+       {:error, :enoent} ->
+         {:error, :no_file}
+     end
+  end
+
 
   @doc """
   Fitz.Render.liquid

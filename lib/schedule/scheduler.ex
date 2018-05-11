@@ -37,21 +37,21 @@ defmodule Fitz.Schedule do
   end
 
   def weeks_interval(params) do
-    IO.inspect weekday = params.schedule.week_day
+    weekday = params.schedule.week_day
     today = Timex.today
      if weekday == nil || weekday == "" do
        from_date = params.from_date
      else
-       IO.inspect weekday = params.schedule.week_day
+       weekday = params.schedule.week_day
        if Timex.weekday(params.from_date) > weekday do
-          IO.inspect int = weekday - Timex.weekday(params.from_date) + 7
-          IO.inspect params.from_date
+          int = weekday - Timex.weekday(params.from_date) + 7
+          params.from_date
            from_date =
             Interval.new(from: params.from_date, until: [days: int], right_open: false)
             |> Map.get(:until)
        else
-         IO.inspect params.weekday
-         IO.inspect  Timex.weekday(today)
+         params.weekday
+         Timex.weekday(today)
          int = weekday - Timex.weekday(today)
          from_date =
           Interval.new(from: today, until: [days: int], right_open: false)
