@@ -39,7 +39,8 @@ defmodule Fitz.Mixfile do
       {:combination, "~> 0.0.3"},
       {:barlix, "~> 0.3.3"},
       {:uuid, "~> 1.1"},
-      {:qrcode, git: "https://gitlab.com/Pacodastre/qrcode", runtime: false}
+      {:qrcode, git: "https://gitlab.com/Pacodastre/qrcode", runtime: false},
+      {:chronic, "~> 1.1.2"}
       #{:twilex, "~> 0.0.1"},
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
