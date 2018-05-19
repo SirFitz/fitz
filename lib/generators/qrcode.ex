@@ -13,7 +13,7 @@ defmodule Qrcode do
     qrcode = :qrcode.encode(token)
     image = :qrcode_demo.simple_png_encode(qrcode)
     File.write(path, image)
-    %{path: path, filename: "qr_#{uid}.png", mime_type: "image/png"}
+    %{path: path, token: token, filename: "qr_#{uid}.png", mime_type: "image/png"}
   end
 
   def pad_string(string, length) do
