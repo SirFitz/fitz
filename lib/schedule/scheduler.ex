@@ -39,7 +39,8 @@ defmodule Fitz.Schedule do
   def weeks_interval(params) do
     weekday = params.schedule.week_day
     today = Timex.today
-     if weekday == nil || weekday == "" do
+    from_date =
+	 if weekday == nil || weekday == "" do
        from_date = params.from_date
      else
        weekday = params.schedule.week_day

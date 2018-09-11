@@ -13,7 +13,10 @@ defmodule Fitz.Struct do
     |> Map.drop([:__meta__, :__struct__])
     |> Enum.filter(fn{k, v}-> Ecto.assoc_loaded?(v) end)
     #|> Enum.into(%{})
-    #|> Enum.map(fn{k, v}-> if !Ecto.assoc_loaded?(v) do {k, %{}} else {k, v} end end)
+    |> Enum.map(fn{k, v}->
+          v = if v == nil do "n/a" else v end
+          %{k => v}
+        end)
   end
 
   @doc """
