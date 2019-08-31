@@ -86,7 +86,7 @@ defmodule Fitz.Schedule do
 
     day_of_month = day_of_month |> String.to_integer
 
-
+    list =
     if day_of_month > 28 do
 
       from_date = Timex.beginning_of_month(Timex.today)
@@ -141,18 +141,20 @@ defmodule Fitz.Schedule do
       interval = params.interval
       from_date =  params.from_date
 
-      if from_date == nil || from_date == "" do
+      {day, month, year, from_date} = if from_date == nil || from_date == "" do
         from_date = Timex.today |> Timex.to_naive_datetime
         date = from_date |> String.split(["-"])
         day = Enum.at(date, 0)
         month = Enum.at(date, 1)
         year = Enum.at(date, 2)
+        {day, month, year, from_date}
       else
         date = from_date |> String.split(["-"])
         day = Enum.at(date, 0)
         month = Enum.at(date, 1)
         year = Enum.at(date, 2)
         {:ok, from_date} = Timex.parse(from_date, "{0D}-{0M}-{YYYY}")
+        {day, month, year, from_date}
       end
 
       params =
@@ -192,7 +194,7 @@ defmodule Fitz.Schedule do
       year = date |> DateTime.to_string |> String.split(["-", " "]) |> Enum.at(0)
       hour = date |> DateTime.to_string |> String.split(["-", " ", "."]) |> Enum.at(3) |> String.split(":") |> Enum.at(0) |> String.to_integer
       minute = date |> DateTime.to_string |> String.split(["-", " ", "."]) |> Enum.at(3) |> String.split(":") |> Enum.at(1)
-      if hour > 12 do
+      time = if hour > 12 do
         hour = hour - 12
         time = ([hour, minute] |> Enum.join(":")) <> "pm"
       else
