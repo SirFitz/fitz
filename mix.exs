@@ -14,9 +14,11 @@ defmodule Fitz.Mixfile do
 
   defp package do
     [
-      files: ["lib", "mix.exs", "README"],
+      files: ["lib", "mix.exs", "README*"],
       maintainers: ["Romario Fitzgerald"],
-      links: %{"GitHub" => "https://github.com/SirFitz/fitz"}
+      links: %{"GitHub" => "https://github.com/SirFitz/fitz"},
+      licenses: [],
+      description: "A library of convenience functions for manipulating datasets."
     ]
   end
 
@@ -45,7 +47,7 @@ defmodule Fitz.Mixfile do
       {:combination, "~> 0.0.3"},
       {:barlix, "~> 0.3.3"},
       {:uuid, "~> 1.1"},
-      {:qrcode, git: "https://gitlab.com/Pacodastre/qrcode", runtime: false},
+      #{:qrcode, git: "https://gitlab.com/Pacodastre/qrcode", runtime: false},
       #{:chronic, "~> 1.1.2"}
       #{:twilex, "~> 0.0.1"},
       # {:dep_from_hexpm, "~> 0.3.0"},

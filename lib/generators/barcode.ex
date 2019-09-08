@@ -1,5 +1,20 @@
 defmodule Barcode do
+  @moduledoc """
+  Documentation for Barcode.
+  """
 
+  @doc """
+  Barcode generate.
+  returns a barcode given a value and method
+  ## Examples
+
+      iex> value = "28727827"
+       "28727827"
+      iex> method = 39
+       "28727827"
+      iex> Barcode.generate(value, method)
+      %{path: "/path/to/my/barcode", token: "28727827_my_padding_here", filename: "mybarcode.png", mime_type: "image/png"}
+  """
   def generate(value, method) do
     token = pad_string(value, 20)
     uid = Timex.now |> Timex.to_gregorian_microseconds
