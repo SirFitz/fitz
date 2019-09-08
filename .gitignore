@@ -1,7 +1,7 @@
 # App artifacts
 /_build
 /db
-#/deps
+/deps
 /*.ez
 
 mix.lock
