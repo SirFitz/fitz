@@ -16,7 +16,13 @@ defmodule Fitz.Mixfile do
     [
       files: ["lib", "mix.exs", "README"],
       maintainers: ["Romario Fitzgerald"],
+      links: %{"GitHub" => "https://github.com/SirFitz/fitz"}
     ]
+  end
+
+
+  defp description() do
+    "A library of convenience functions for manipulating datasets."
   end
 
   # Run "mix help compile.app" to learn about applications.
